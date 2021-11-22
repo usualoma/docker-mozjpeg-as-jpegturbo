@@ -1,0 +1,4 @@
+1001-use-utc-timestamp.patch
+2001_dont-set-RPATH.patch
+0001-cmake-MATCHES-uses-regex-not-globs.patch
+1002_jpeg-skip-scanlines-avoid-NULL+0-UBSan-error.patch

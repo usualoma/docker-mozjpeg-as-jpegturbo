@@ -1,0 +1,10 @@
+version: '3'
+services:
+  builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./debian:/root/build/mozjpeg/debian
+      - ./dist:/dist
+    command: sh -c 'debuild -uc -us -b && mv ../*.deb /dist'

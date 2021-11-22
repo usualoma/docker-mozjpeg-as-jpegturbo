@@ -1,0 +1,15 @@
+# manually checked the all_6.js Javascript file, it is not minified/pre-built
+libjpeg-turbo source: source-is-missing doc/html/search/all_6.js line length *
+libjpeg-turbo source: source-contains-prebuilt-javascript-object doc/html/search/all_6.js line length is 455 characters (>256)
+
+# manually checked the menu.js Javascript file, it is not minified/pre-built
+libjpeg-turbo source: source-is-missing doc/html/menu.js line length *
+libjpeg-turbo source: very-long-line-length-in-source-file doc/html/menu.js line length is 701 characters (>512)
+libjpeg-turbo source: source-contains-prebuilt-javascript-object doc/html/menu.js line length is 695 characters (>512)
+
+# we don't use this file in the bin:pkg (FIXME, this file should not be in the src:pkg, at all!)
+libjpeg-turbo source: very-long-line-length-in-source-file doc/html/jquery.js line length is 32683 characters (>512)
+libjpeg-turbo source: source-contains-prebuilt-javascript-object doc/html/jquery.js line length is 32683 characters (>512)
+
+# yes, we know. This needs to be fixed after the Debian 11 release freeze
+libjpeg-turbo source: source-contains-prebuilt-doxygen-documentation *

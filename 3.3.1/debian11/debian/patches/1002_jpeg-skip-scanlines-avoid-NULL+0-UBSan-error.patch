@@ -1,0 +1,40 @@
+From 6d2e8837b440ce4d8befd805a5abc0d351028d70 Mon Sep 17 00:00:00 2001
+From: DRC <information@libjpeg-turbo.org>
+Date: Wed, 18 Nov 2020 13:25:06 -0600
+Subject: [PATCH] jpeg_skip_scanlines(): Avoid NULL + 0 UBSan error
+
+This error occurs at the call to (*cinfo->cconvert->color_convert)() in
+sep_upsample() whenever cinfo->upsample->need_context_rows == TRUE
+(i.e. whenever h2v2 or h1v2 fancy upsampling is used.)  The error is
+innocuous, since (*cinfo->cconvert->color_convert)() points to a dummy
+function (noop_convert()) in that case.
+
+Fixes #470
+---
+ jdapistd.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/jdapistd.c b/jdapistd.c
+index 38bd1110d..c304d5652 100644
+--- a/jdapistd.c
++++ b/jdapistd.c
+@@ -319,6 +319,8 @@ read_and_discard_scanlines(j_decompress_ptr cinfo, JDIMENSION num_lines)
+ {
+   JDIMENSION n;
+   my_master_ptr master = (my_master_ptr)cinfo->master;
++  JSAMPLE dummy_sample[1] = { 0 };
++  JSAMPROW dummy_row = dummy_sample;
+   JSAMPARRAY scanlines = NULL;
+   void (*color_convert) (j_decompress_ptr cinfo, JSAMPIMAGE input_buf,
+                          JDIMENSION input_row, JSAMPARRAY output_buf,
+@@ -329,6 +331,10 @@ read_and_discard_scanlines(j_decompress_ptr cinfo, JDIMENSION num_lines)
+   if (cinfo->cconvert && cinfo->cconvert->color_convert) {
+     color_convert = cinfo->cconvert->color_convert;
+     cinfo->cconvert->color_convert = noop_convert;
++    /* This just prevents UBSan from complaining about adding 0 to a NULL
++     * pointer.  The pointer isn't actually used.
++     */
++    scanlines = &dummy_row;
+   }
+ 
+   if (cinfo->cquantize && cinfo->cquantize->color_quantize) {
